@@ -1,0 +1,111 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Kvdb API
+    version: 0.0.1
+paths:
+    /api/proxy/v1/list-db:
+        get:
+            tags:
+                - Kvdb
+            description: ListDB 列出所有的db
+            operationId: Kvdb_ListDB
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.kvdb.v1.ListDBReply'
+    /api/proxy/v1/search-prefix/{db}/{table}/{keyPrefix}:
+        get:
+            tags:
+                - Kvdb
+            description: SearchPrefix 列出某前缀所有的key value
+            operationId: Kvdb_SearchPrefix
+            parameters:
+                - name: db
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: table
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: keyPrefix
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.kvdb.v1.SearchPrefixReply'
+    /api/proxy/v1/search/{db}/{table}/{key}:
+        get:
+            tags:
+                - Kvdb
+            description: Search 查询key 对应的 value
+            operationId: Kvdb_Search
+            parameters:
+                - name: db
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: table
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: key
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.kvdb.v1.SearchReply'
+components:
+    schemas:
+        api.kvdb.v1.KvdbValue:
+            type: object
+            properties:
+                key:
+                    type: string
+                value:
+                    type: string
+        api.kvdb.v1.ListDBReply:
+            type: object
+            properties:
+                name:
+                    type: array
+                    items:
+                        type: string
+        api.kvdb.v1.SearchPrefixReply:
+            type: object
+            properties:
+                kv:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.kvdb.v1.KvdbValue'
+        api.kvdb.v1.SearchReply:
+            type: object
+            properties:
+                kv:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.kvdb.v1.KvdbValue'
+tags:
+    - name: Kvdb

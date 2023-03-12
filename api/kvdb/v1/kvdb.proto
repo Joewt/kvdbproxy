@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package api.kvdb.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "kvdbproxy/api/kvdb/v1;v1";
+// option java_multiple_files = true;
+// option java_package = "api.kvdb.v1";
+
+service Kvdb {
+	// ListDB 列出所有的db
+	rpc ListDB (ListDBRequest) returns (ListDBReply) {
+		option (google.api.http) = {
+			get: "/api/proxy/v1/list-db"
+		};
+	};
+	// SearchPrefix 列出某前缀所有的key value
+	rpc SearchPrefix(SearchPrefixRequest) returns (SearchPrefixReply) {
+		option (google.api.http) = {
+			get: "/api/proxy/v1/search-prefix/{db}/{table}/{key_prefix}"
+		};
+	};
+
+	// Search 查询key 对应的 value
+	rpc Search(SearchRequest) returns (SearchReply) {
+		option (google.api.http) = {
+			get: "/api/proxy/v1/search/{db}/{table}/{key}"
+		};
+	};
+}
+
+message KvdbValue {
+	string key = 1;
+	string value = 2;
+}
+
+message ListDBRequest {
+}
+
+message ListDBReply {
+	repeated string name = 1;
+}
+
+message SearchPrefixRequest {
+	string db = 1;
+	string table = 2;
+	string key_prefix = 3;
+}
+
+message SearchPrefixReply {
+	repeated KvdbValue kv= 1;
+}
+
+message SearchRequest {
+	string db = 1;
+	string table = 2;
+	string key = 3;
+}
+
+message SearchReply {
+	repeated KvdbValue kv= 1;
+}
