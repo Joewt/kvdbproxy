@@ -19,13 +19,20 @@ type Kvdb struct {
 	Hello string
 }
 
+// KvdbListDB model
+type KvdbListDB struct {
+	Name []string
+}
+
+type KvdbSearchPrefix struct {
+	Key   string
+	Value string
+}
+
 // KvdbRepo is a Greater repo.
 type KvdbRepo interface {
-	Save(context.Context, *Kvdb) (*Kvdb, error)
-	Update(context.Context, *Kvdb) (*Kvdb, error)
-	FindByID(context.Context, int64) (*Kvdb, error)
-	ListByHello(context.Context, string) ([]*Kvdb, error)
-	ListAll(context.Context) ([]*Kvdb, error)
+	ListDB(ctx context.Context) (*KvdbListDB, error)
+	SearchPrefix(ctx context.Context, prefix string) ([]*KvdbSearchPrefix, error)
 }
 
 // KvdbUsecase is a Kvdb usecase.
@@ -39,8 +46,10 @@ func NewKvdbUsecase(repo KvdbRepo, logger log.Logger) *KvdbUsecase {
 	return &KvdbUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-// CreateGreeter creates a Kvdb, and returns the new Kvdb.
-func (uc *KvdbUsecase) CreateKvdb(ctx context.Context, g *Kvdb) (*Kvdb, error) {
-	uc.log.WithContext(ctx).Infof("CreateGreeter: %v", g.Hello)
-	return uc.repo.Save(ctx, g)
+func (uc *KvdbUsecase) ListDB(ctx context.Context) (*KvdbListDB, error) {
+	return uc.repo.ListDB(ctx)
+}
+
+func (uc *KvdbUsecase) SearchPrefix(ctx context.Context, prefix string) ([]*KvdbSearchPrefix, error) {
+	return uc.repo.SearchPrefix(ctx, prefix)
 }
